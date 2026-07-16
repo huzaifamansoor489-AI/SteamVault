@@ -22,6 +22,6 @@ Tech Stack
 
 Live Demo
 
-https://steamvault-production.up.railway.app/home
+https://steamvault-production.up.railway.app/
 
 This project was built to practice Django fundamentals including models, views, templates, database operations, and CRUD functionality.
