@@ -27,7 +27,15 @@ SECRET_KEY = 'django-insecure-&w&80^u&2y00$41=gmucn9!8wg6ip!yz5htm&(9o+g8jxqf*-a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "steamvault-production.up.railway.app",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://steamvault-production.up.railway.app",
+]
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # Application definition
@@ -121,6 +129,3 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://steamvault-production.up.railway.app/",
-]
