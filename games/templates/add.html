@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Game | SteamVault</title>
+
+    <style>
+        /* ============================
+           SteamVault - Add Game Page Styles
+           ============================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #171A21;
+            --bg-darker: #10131A;
+            --bg-card: #1B2838;
+            --accent-blue: #66C0F4;
+            --accent-blue-dark: #4A9FD8;
+            --text-light: #E9F1F7;
+            --text-muted: #A5B3C1;
+            --border-subtle: rgba(102, 192, 244, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        .page-header,
+        .form-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ---------- Page Header ---------- */
+        .page-header {
+            text-align: center;
+            padding-top: 70px;
+            padding-bottom: 40px;
+            background: radial-gradient(circle at top, rgba(102, 192, 244, 0.08), transparent 60%);
+        }
+
+        .page-title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--text-light);
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* ---------- Form ---------- */
+        .form-section {
+            padding-top: 40px;
+            padding-bottom: 90px;
+        }
+
+        .form-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            background-color: var(--bg-darker);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .cover-upload {
+            width: 100%;
+            height: 160px;
+            border: 2px dashed var(--border-subtle);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .cover-upload:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* ---------- Form Actions ---------- */
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 30px;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 28px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 13px 32px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: #0F1620;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-blue-dark);
+            box-shadow: 0 0 18px rgba(102, 192, 244, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--accent-blue);
+            border: 2px solid var(--accent-blue);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--accent-blue);
+            color: #0F1620;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 600px) {
+            .page-title {
+                font-size: 1.9rem;
+            }
+
+            .form-card {
+                padding: 26px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="page-header">
+        <h1 class="page-title">Add a New Game</h1>
+        <p class="page-subtitle">Fill in the details to add a game to your library.</p>
+    </section>
+
+    <section class="form-section">
+        <div class="form-card">
+            <form method="POST" action="#">
+                {% csrf_token %}
+
+
+                <div class="form-group">
+                    <label for="title">Game Title</label>
+                    <input type="text" id="title" name="game_name" value="{{game.game_name}}" placeholder="e.g. Elden Ring">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="genre">Genre</label>
+                        <select id="genre" name="game_genre" value="{{game.game_genre}}">
+                            <option value="">Select genre</option>
+                            <option value="action">Action</option>
+                            <option value="rpg">RPG</option>
+                            <option value="strategy">Strategy</option>
+                            <option value="adventure">Adventure</option>
+                            <option value="simulation">Simulation</option>
+                            <option value="sports">Sports</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="platform">Platform</label>
+                        <select id="platform" name="game_platform" value="{{game.game_platform}}">
+                            <option value="">Select platform</option>
+                            <option value="pc">PC</option>
+                            <option value="playstation">PlayStation</option>
+                            <option value="xbox">Xbox</option>
+                            <option value="switch">Nintendo Switch</option>
+                            <option value="mobile">Mobile</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="developer">Developer</label>
+                        <input type="text" id="developer" name="game_developer" value="{{game.game_developer}}" placeholder="e.g. FromSoftware">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="release_year">Release Year</label>
+                        <input type="number" id="release_year" name="release_year" value="{{game.release_year}}" placeholder="e.g. 2022">
+                    </div>
+                </div>
+
+<div class="form-row">
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" name="status"value="{{game.status}}">
+                            <option value="">Select status</option>
+                            <option value="playing">Playing</option>
+                            <option value="completed">Completed</option>
+                            <option value="wishlist">Wishlist</option>
+                            <option value="backlog">Backlog</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rating">Rating (out of 10)</label>
+                        <input type="number" id="rating" name="rating" value="{{game.rating}}" min="0" max="10" placeholder="e.g. 9">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hours_played">Hours Played</label>
+                    <input type="number" id="hours_played" name="hours_played" value="{{game.hours_played}}" placeholder="e.g. 45">
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="game_description" value="{{game.game_description}}" placeholder="A short summary of the game..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Add Game</button>
+                    <a href="#" class="btn btn-secondary">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+    </section>
+
+</body>
+</html>

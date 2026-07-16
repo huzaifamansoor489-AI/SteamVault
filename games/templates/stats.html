@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics | SteamVault</title>
+
+    <style>
+        /* ============================
+           SteamVault - Stats Page Styles
+           ============================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #171A21;
+            --bg-darker: #10131A;
+            --bg-card: #1B2838;
+            --accent-blue: #66C0F4;
+            --accent-blue-dark: #4A9FD8;
+            --accent-green: #6DC386;
+            --accent-amber: #E3B341;
+            --text-light: #E9F1F7;
+            --text-muted: #A5B3C1;
+            --border-subtle: rgba(102, 192, 244, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        .page-header,
+        .overview-section,
+        .breakdown-section,
+        .progress-section,
+        .recent-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ---------- Page Header ---------- */
+        .page-header {
+            text-align: center;
+            padding-top: 80px;
+            padding-bottom: 40px;
+            background: radial-gradient(circle at top, rgba(102, 192, 244, 0.08), transparent 60%);
+        }
+
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--text-light);
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+
+        .page-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+        }
+
+        /* ---------- Section Titles ---------- */
+        .section-title {
+            color: var(--text-light);
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        /* ---------- Overview Cards ---------- */
+        .overview-section {
+            padding-top: 50px;
+            padding-bottom: 60px;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 28px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(102, 192, 244, 0.15);
+            border-color: var(--accent-blue);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            color: var(--accent-blue);
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        /* ---------- Breakdown / Bar Chart Section ---------- */
+        .breakdown-section {
+            padding-bottom: 60px;
+        }
+
+        .breakdown-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 32px;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .bar-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .bar-label {
+            width: 140px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .bar-track {
+            flex: 1;
+            background-color: var(--bg-darker);
+            border-radius: 6px;
+            height: 14px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            background-color: var(--accent-blue);
+        }
+
+        .bar-value {
+            width: 50px;
+            text-align: right;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* ---------- Progress Section ---------- */
+        .progress-section {
+            padding-bottom: 60px;
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .progress-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 28px;
+            text-align: center;
+        }
+
+        .progress-card-title {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .progress-ring-wrapper {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background-color: var(--bg-darker);
+            border: 8px solid var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-ring-value {
+            color: var(--text-light);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .progress-card-note {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ---------- Recent Activity ---------- */
+        .recent-section {
+            padding-bottom: 90px;
+        }
+
+        .recent-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .recent-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 28px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .recent-item:last-child {
+            border-bottom: none;
+        }
+
+        .recent-game-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .recent-game-title {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .recent-game-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .recent-status {
+            display: inline-block;
+            background-color: rgba(102, 192, 244, 0.1);
+            color: var(--accent-blue);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 900px) {
+            .overview-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .progress-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .page-title {
+                font-size: 2.1rem;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bar-label {
+                width: 90px;
+                font-size: 0.8rem;
+            }
+
+            .recent-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="page-header">
+        <h1 class="page-title">Library Statistics</h1>
+        <p class="page-subtitle">A breakdown of your gaming habits and collection.</p>
+    </section>
+
+    <section class="overview-section">
+        <h2 class="section-title">Overview</h2>
+        <div class="overview-grid">
+            <div class="stat-card">
+                <span class="stat-label">Total Games</span>
+                <span class="stat-value">{{ total_games }}</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Playing</span>
+                <span class="stat-value">{{ playing_count }}</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Completed</span>
+                <span class="stat-value">{{ completed_count }}</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Wishlist</span>
+                <span class="stat-value">{{ wishlist_count }}</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="breakdown-section">
+        <h2 class="section-title">Games by Genre</h2>
+        <div class="breakdown-card">
+
+            <div class="bar-row">
+                <span class="bar-label">Action</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: 80%;"></div>
+                </div>
+                <span class="bar-value">18</span>
+            </div>
+
+            <div class="bar-row">
+                <span class="bar-label">RPG</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: 65%;"></div>
+                </div>
+                <span class="bar-value">14</span>
+            </div>
+
+            <div class="bar-row">
+                <span class="bar-label">Strategy</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: 45%;"></div>
+                </div>
+                <span class="bar-value">9</span>
+            </div>
+
+            <div class="bar-row">
+                <span class="bar-label">Adventure</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: 35%;"></div>
+                </div>
+                <span class="bar-value">7</span>
+            </div>
+
+            <div class="bar-row">
+                <span class="bar-label">Simulation</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: 20%;"></div>
+                </div>
+                <span class="bar-value">4</span>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="progress-section">
+        <h2 class="section-title">Progress Snapshot</h2>
+        <div class="progress-grid">
+
+            <div class="progress-card">
+                <p class="progress-card-title">Completion Rate</p>
+                <div class="progress-ring-wrapper">
+                    <span class="progress-ring-value">{{ completion_rate }}%</span>
+                </div>
+                <p class="progress-card-note">of your library finished</p>
+            </div>
+
+            <div class="progress-card">
+                <p class="progress-card-title">Avg. Rating Given</p>
+                <div class="progress-ring-wrapper">
+                    <span class="progress-ring-value">{{ average_rating }}</span>
+                </div>
+                <p class="progress-card-note">out of 10 stars</p>
+            </div>
+
+            <div class="progress-card">
+                <p class="progress-card-title">Hours Logged</p>
+                <div class="progress-ring-wrapper">
+                    <span class="progress-ring-value">{{ total_hours }}h</span>
+                </div>
+                <p class="progress-card-note">across all games</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="recent-section">
+        <h2 class="section-title">Recently Updated</h2>
+        <div class="recent-card">
+
+            {% for game in recent_games %}
+            <div class="recent-item">
+                <div class="recent-game-info">
+                    <span class="recent-game-title">{{ game.title }}</span>
+                    <span class="recent-game-meta">{{ game.genre }} &middot; {{ game.updated_at }}</span>
+                </div>
+                <span class="recent-status">{{ game.status }}</span>
+            </div>
+            {% endfor %}
+
+        </div>
+    </section>
+
+</body>
+</html>
